@@ -1919,17 +1919,17 @@ For things that don't fall under the purview of automatic formatting
 for some guidance.
 
 ### Use consistent capitalization
-JavaScript is untyped, so capitalization tells you a lot about your variables,
+PHP is untyped, so capitalization tells you a lot about your variables,
 functions, etc. These rules are subjective, so your team can choose whatever
 they want. The point is, no matter what you all choose, just be consistent.
 
 **Bad:**
-```javascript
-const DAYS_IN_WEEK = 7;
-const daysInMonth = 30;
+```php
+$DAYS_IN_WEEK = 7;
+$daysInMonth = 30;
 
-const songs = ['Back In Black', 'Stairway to Heaven', 'Hey Jude'];
-const Artists = ['ACDC', 'Led Zeppelin', 'The Beatles'];
+$songs = ['Back In Black', 'Stairway to Heaven', 'Hey Jude'];
+$Artists = ['ACDC', 'Led Zeppelin', 'The Beatles'];
 
 function eraseDatabase() {}
 function restore_database() {}
@@ -1939,12 +1939,12 @@ class Alpaca {}
 ```
 
 **Good:**
-```javascript
-const DAYS_IN_WEEK = 7;
-const DAYS_IN_MONTH = 30;
+```php
+$DAYS_IN_WEEK = 7;
+$DAYS_IN_MONTH = 30;
 
-const songs = ['Back In Black', 'Stairway to Heaven', 'Hey Jude'];
-const artists = ['ACDC', 'Led Zeppelin', 'The Beatles'];
+$songs = ['Back In Black', 'Stairway to Heaven', 'Hey Jude'];
+$artists = ['ACDC', 'Led Zeppelin', 'The Beatles'];
 
 function eraseDatabase() {}
 function restoreDatabase() {}
@@ -1961,81 +1961,83 @@ file. Ideally, keep the caller right above the callee. We tend to read code from
 top-to-bottom, like a newspaper. Because of this, make your code read that way.
 
 **Bad:**
-```javascript
+```php
 class PerformanceReview {
-  constructor(employee) {
-    this.employee = employee;
-  }
-
-  lookupPeers() {
-    return db.lookup(this.employee, 'peers');
-  }
-
-  lookupManager() {
-    return db.lookup(this.employee, 'manager');
-  }
-
-  getPeerReviews() {
-    const peers = this.lookupPeers();
-    // ...
-  }
-
-  perfReview() {
-    this.getPeerReviews();
-    this.getManagerReview();
-    this.getSelfReview();
-  }
-
-  getManagerReview() {
-    const manager = this.lookupManager();
-  }
-
-  getSelfReview() {
-    // ...
-  }
+    public function __construct($employee) {
+        $this->employee = $employee;
+    }
+    
+    public function lookupPeers() {
+        return DB::lookup($this->employee, 'peers');
+    }
+    
+    public function lookupManager() {
+        return DB::lookup($this->employee, 'manager');
+    }
+    
+    public function getPeerReviews() {
+        $peers = $this->lookupPeers();
+        // ...
+    }
+    
+    public function perfReview() {
+        $this->getPeerReviews();
+        $this->getManagerReview();
+        $this->getSelfReview();
+    }
+    
+    public function getManagerReview() {
+        $manager = $this->lookupManager();
+        // ...
+    }
+    
+    public function getSelfReview() {
+        // ...
+    }
 }
 
-const review = new PerformanceReview(employee);
-review.perfReview();
+$review = new PerformanceReview($employee);
+$review->perfReview();
 ```
 
 **Good:**
-```javascript
+```php
 class PerformanceReview {
-  constructor(employee) {
-    this.employee = employee;
-  }
-
-  perfReview() {
-    this.getPeerReviews();
-    this.getManagerReview();
-    this.getSelfReview();
-  }
-
-  getPeerReviews() {
-    const peers = this.lookupPeers();
-    // ...
-  }
-
-  lookupPeers() {
-    return db.lookup(this.employee, 'peers');
-  }
-
-  getManagerReview() {
-    const manager = this.lookupManager();
-  }
-
-  lookupManager() {
-    return db.lookup(this.employee, 'manager');
-  }
-
-  getSelfReview() {
-    // ...
-  }
+    public function __construct($employee) {
+        $this->employee = $employee;
+    }
+    
+    public function perfReview() {
+        $this->getPeerReviews();
+        $this->getManagerReview();
+        $this->getSelfReview();
+    }
+    
+    public function getPeerReviews() {
+        $peers = $this->lookupPeers();
+        // ...
+    }
+    
+    public function lookupPeers() {
+        return DB::lookup($this->employee, 'peers');
+    }
+    
+    public function getManagerReview() {
+        $manager = $this->lookupManager();
+        // ...
+    }
+    
+    public function lookupManager() {
+        return DB::lookup($this->employee, 'manager');
+    }
+    
+    public function getSelfReview() {
+        // ...
+    }
 }
 
-const review = new PerformanceReview(employee);
-review.perfReview();
+$review = new PerformanceReview($employee);
+$review->perfReview();
 ```
 
 **[⬆ back to top](#table-of-contents)**

@@ -1,5 +1,5 @@
 
-# clean-code-javascript
+# clean-code-php
 
 ## Table of Contents
   1. [Introduction](#introduction)
@@ -21,8 +21,8 @@ you shout when reading code](http://www.osnews.com/images/comics/wtfm.jpg)
 
 Software engineering principles, from Robert C. Martin's book
 [*Clean Code*](https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882),
-adapted for JavaScript. This is not a style guide. It's a guide to producing
-readable, reusable, and refactorable software in JavaScript.
+adapted for PHP. This is not a style guide. It's a guide to producing
+readable, reusable, scalable and refactorable software in PHP.
 
 Not every principle herein has to be strictly followed, and even fewer will be
 universally agreed upon. These are guidelines and nothing more, but they are
@@ -33,7 +33,7 @@ Our craft of software engineering is just a bit over 50 years old, and we are
 still learning a lot. When software architecture is as old as architecture
 itself, maybe then we will have harder rules to follow. For now, let these
 guidelines serve as a touchstone by which to assess the quality of the
-JavaScript code that you and your team produce.
+PHP code that you and your team produce.
 
 One more thing: knowing these won't immediately make you a better software
 developer, and working with them for many years doesn't mean you won't make
@@ -42,32 +42,40 @@ shaped into its final form. Finally, we chisel away the imperfections when
 we review it with our peers. Don't beat yourself up for first drafts that need
 improvement. Beat up the code instead!
 
+**Note:** much of this library was translated to php from the brilliant [*clean-code-javascript*](https://raw.githubusercontent.com/ryanmcdermott/clean-code-javascript/)
+
+
 ## **Variables**
 ### Use meaningful and pronounceable variable names
 
+The name should answer all the big questions:
+* Why it exists?
+* What it does?
+* How it is used?
+
 **Bad:**
-```javascript
-const yyyymmdstr = moment().format('YYYY/MM/DD');
+```php
+$yyyymmdstr = (new Date())->now(); // current date
 ```
 
 **Good:**
-```javascript
-const currentDate = moment().format('YYYY/MM/DD');
+```php
+$currentDate = (new Date())->now();
 ```
 **[⬆ back to top](#table-of-contents)**
 
 ### Use the same vocabulary for the same type of variable
 
 **Bad:**
-```javascript
-getUserInfo();
-getClientData();
-getCustomerRecord();
+```php
+$this->getUserInfo();
+$this->getClientData();
+$this->getCustomerRecord();
 ```
 
 **Good:**
-```javascript
-getUser();
+```php
+$this->getUser();
 ```
 **[⬆ back to top](#table-of-contents)**
 
@@ -75,42 +83,39 @@ getUser();
 We will read more code than we will ever write. It's important that the code we
 do write is readable and searchable. By *not* naming variables that end up
 being meaningful for understanding our program, we hurt our readers.
-Make your names searchable. Tools like
-[buddy.js](https://github.com/danielstjules/buddy.js) and
-[ESLint](https://github.com/eslint/eslint/blob/660e0918933e6e7fede26bc675a0763a6b357c94/docs/rules/no-magic-numbers.md)
-can help identify unnamed constants.
+Make your names searchable. There are many tools on github that can help with that task.
 
 **Bad:**
-```javascript
-// What the heck is 86400000 for?
-setTimeout(blastOff, 86400000);
+```php
+// What the heck is 60000000 for?
+usleep(60000000);
 
 ```
 
 **Good:**
-```javascript
+```php
 // Declare them as capitalized `const` globals.
-const MILLISECONDS_IN_A_DAY = 86400000;
+const MINUTE_IN_MICROSECONDS = 60000000;
 
-setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
+usleep(MINUTE_IN_MICROSECONDS);
 
 ```
 **[⬆ back to top](#table-of-contents)**
 
 ### Use explanatory variables
 **Bad:**
-```javascript
+```php
 const address = 'One Infinite Loop, Cupertino 95014';
 const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
 saveCityZipCode(address.match(cityZipCodeRegex)[1], address.match(cityZipCodeRegex)[2]);
 ```
 
 **Good:**
-```javascript
-const address = 'One Infinite Loop, Cupertino 95014';
-const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
-const [, city, zipCode] = address.match(cityZipCodeRegex) || [];
-saveCityZipCode(city, zipCode);
+```php
+$address = 'One Infinite Loop, Cupertino 95014';
+$cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
+list(city, zipCode) = preg_match(cityZipCodeRegex, address);
+$this->saveCityZipCode(city, zipCode);
 ```
 **[⬆ back to top](#table-of-contents)**
 
@@ -118,29 +123,29 @@ saveCityZipCode(city, zipCode);
 Explicit is better than implicit.
 
 **Bad:**
-```javascript
-const locations = ['Austin', 'New York', 'San Francisco'];
-locations.forEach((l) => {
-  doStuff();
-  doSomeOtherStuff();
+```php
+$locations = ['Austin', 'New York', 'San Francisco'];
+foreach ($locations as $l) {
+  $this->doStuff();
+  $this->doSomeOtherStuff();
   // ...
   // ...
   // ...
-  // Wait, what is `l` for again?
-  dispatch(l);
+  // Wait, what is `$l` for again?
+  $this->dispatch($l);
 });
 ```
 
 **Good:**
-```javascript
-const locations = ['Austin', 'New York', 'San Francisco'];
-locations.forEach((location) => {
-  doStuff();
-  doSomeOtherStuff();
+```php
+$locations = ['Austin', 'New York', 'San Francisco'];
+foreach ($locations as $location) {
+  $this->doStuff();
+  $this->doSomeOtherStuff();
   // ...
   // ...
   // ...
-  dispatch(location);
+  $this->dispatch($location);
 });
 ```
 **[⬆ back to top](#table-of-contents)**
@@ -150,28 +155,28 @@ If your class/object name tells you something, don't repeat that in your
 variable name.
 
 **Bad:**
-```javascript
-const Car = {
-  carMake: 'Honda',
-  carModel: 'Accord',
-  carColor: 'Blue'
-};
+```php
+$car = [
+  'carMaker​' => 'Honda',
+  'carModel' => 'Accord',
+  'carColor' => 'Blue'
+];
 
-function paintCar(car) {
-  car.carColor = 'Red';
+function paintCar($car) {
+  $car['carColor'] = 'Red';
 }
 ```
 
 **Good:**
-```javascript
-const Car = {
-  make: 'Honda',
-  model: 'Accord',
-  color: 'Blue'
+```php
+$car = [
+  'make' => 'Honda',
+  'model' => 'Accord',
+  'color' => 'Blue'
 };
 
-function paintCar(car) {
-  car.color = 'Red';
+function paintCar($car) {
+  $car['color'] = 'Red';
 }
 ```
 **[⬆ back to top](#table-of-contents)**

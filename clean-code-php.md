@@ -53,12 +53,12 @@ The name should answer all the big questions:
 
 **Bad:**
 ```php
-yyyymmdstr = (new Date())->now(); // current date
+$yyyymmdstr = (new Date())->now(); // current date
 ```
 
 **Good:**
 ```php
-currentDate = (new Date())->now();
+$currentDate = (new Date())->now();
 ```
 **[⬆ back to top](#table-of-contents)**
 
@@ -84,14 +84,14 @@ being meaningful for understanding our program, we hurt our readers.
 Make your names searchable. There are many tools on github that can help with that task.
 
 **Bad:**
-```javascript
+```php
 // What the heck is 60000000 for?
 usleep(60000000);
 
 ```
 
 **Good:**
-```javascript
+```php
 // Declare them as capitalized `const` globals.
 const MINUTE_IN_MICROSECONDS = 60000000;
 
@@ -102,16 +102,16 @@ usleep(MINUTE_IN_MICROSECONDS);
 
 ### Use explanatory variables
 **Bad:**
-```javascript
+```php
 const address = 'One Infinite Loop, Cupertino 95014';
 const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
 saveCityZipCode(address.match(cityZipCodeRegex)[1], address.match(cityZipCodeRegex)[2]);
 ```
 
 **Good:**
-```javascript
-address = 'One Infinite Loop, Cupertino 95014';
-cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
+```php
+$address = 'One Infinite Loop, Cupertino 95014';
+$cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
 list(city, zipCode) = preg_match(cityZipCodeRegex, address);
 $this->saveCityZipCode(city, zipCode);
 ```
@@ -119,31 +119,31 @@ $this->saveCityZipCode(city, zipCode);
 
 ### Avoid Mental Mapping
 Explicit is better than implicit.
---------------------------------------------------------------RIGHT_HERE
+
 **Bad:**
-```javascript
-const locations = ['Austin', 'New York', 'San Francisco'];
-locations.forEach((l) => {
-  doStuff();
-  doSomeOtherStuff();
+```php
+$locations = ['Austin', 'New York', 'San Francisco'];
+foreach ($locations as $l) {
+  $this->doStuff();
+  $this->doSomeOtherStuff();
   // ...
   // ...
   // ...
-  // Wait, what is `l` for again?
-  dispatch(l);
+  // Wait, what is `$l` for again?
+  $this->dispatch($l);
 });
 ```
 
 **Good:**
-```javascript
-const locations = ['Austin', 'New York', 'San Francisco'];
-locations.forEach((location) => {
-  doStuff();
-  doSomeOtherStuff();
+```php
+$locations = ['Austin', 'New York', 'San Francisco'];
+foreach ($locations as $location) {
+  $this->doStuff();
+  $this->doSomeOtherStuff();
   // ...
   // ...
   // ...
-  dispatch(location);
+  $this->dispatch($location);
 });
 ```
 **[⬆ back to top](#table-of-contents)**
@@ -153,28 +153,28 @@ If your class/object name tells you something, don't repeat that in your
 variable name.
 
 **Bad:**
-```javascript
-const Car = {
-  carMake: 'Honda',
-  carModel: 'Accord',
-  carColor: 'Blue'
-};
+```php
+$car = [
+  'carMaker​' => 'Honda',
+  'carModel' => 'Accord',
+  'carColor' => 'Blue'
+];
 
-function paintCar(car) {
-  car.carColor = 'Red';
+function paintCar($car) {
+  $car['carColor'] = 'Red';
 }
 ```
 
 **Good:**
-```javascript
-const Car = {
-  make: 'Honda',
-  model: 'Accord',
-  color: 'Blue'
+```php
+$car = [
+  'make' => 'Honda',
+  'model' => 'Accord',
+  'color' => 'Blue'
 };
 
-function paintCar(car) {
-  car.color = 'Red';
+function paintCar($car) {
+  $car['color'] = 'Red';
 }
 ```
 **[⬆ back to top](#table-of-contents)**

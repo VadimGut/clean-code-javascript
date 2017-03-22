@@ -55,12 +55,12 @@ The name should answer all the big questions:
 
 **Bad:**
 ```php
-$yyyymmdstr = (new Date())->now(); // current date
+$yyyymmdstr = date("y-m-d"); // current date
 ```
 
 **Good:**
 ```php
-$currentDate = (new Date())->now();
+$currentDate = date("y-m-d");
 ```
 **[⬆ back to top](#table-of-contents)**
 
@@ -105,17 +105,17 @@ usleep(MINUTE_IN_MICROSECONDS);
 ### Use explanatory variables
 **Bad:**
 ```php
-const address = 'One Infinite Loop, Cupertino 95014';
-const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
-saveCityZipCode(address.match(cityZipCodeRegex)[1], address.match(cityZipCodeRegex)[2]);
+$address = 'Cupertino, 95014';
+$explodeBy = ',';
+$this->saveCityZipCode(explode($explodeBy, $address)[0], explode($explodeBy, $address)[1])
 ```
 
 **Good:**
 ```php
-$address = 'One Infinite Loop, Cupertino 95014';
-$cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
-list(city, zipCode) = preg_match(cityZipCodeRegex, address);
-$this->saveCityZipCode(city, zipCode);
+$address = 'Cupertino, 95014';
+$explodeBy = ',';
+list($city, $zipCode) = explode($explodeBy, $address)
+$this->saveCityZipCode($city, $zipCode);
 ```
 **[⬆ back to top](#table-of-contents)**
 
@@ -183,25 +183,22 @@ function paintCar($car) {
 
 ### Use default arguments instead of short circuiting or conditionals
 Default arguments are often cleaner than short circuiting. Be aware that if you
-use them, your function will only provide default values for `undefined`
-arguments. Other "falsy" values such as `''`, `""`, `false`, `null`, `0`, and
-`NaN`, will not be replaced by a default value.
+use them, your function will only provide default values for `null`
+arguments. Other "falsy" values such as `''`, `""`, `false`, and `0`, will not be replaced by a default value.
 
 **Bad:**
-```javascript
+```php
 function createMicrobrewery(name) {
-  const breweryName = name || 'Hipster Brew Co.';
+  $name = !empty($name) ? $name : 'Hipster Brew Co.';
   // ...
 }
-
 ```
 
 **Good:**
-```javascript
+```php
 function createMicrobrewery(breweryName = 'Hipster Brew Co.') {
   // ...
 }
-
 ```
 **[⬆ back to top](#table-of-contents)**
 
@@ -218,75 +215,57 @@ more than two arguments then your function is trying to do too much. In cases
 where it's not, most of the time a higher-level object will suffice as an
 argument.
 
-Since JavaScript allows you to make objects on the fly, without a lot of class
-boilerplate, you can use an object if you are finding yourself needing a
-lot of arguments.
-
-To make it obvious what properties the function expects, you can use the ES2015/ES6
-destructuring syntax. This has a few advantages:
-
-1. When someone looks at the function signature, it's immediately clear what
-properties are being used.
-2. Destructuring also clones the specified primitive values of the argument
-object passed into the function. This can help prevent side effects. Note:
-objects and arrays that are destructured from the argument object are NOT
-cloned.
-3. Linters can warn you about unused properties, which would be impossible
-without destructuring.
-
 **Bad:**
-```javascript
-function createMenu(title, body, buttonText, cancellable) {
+```php
+function createMenu($title, $body, $buttonText, $cancellable) {
   // ...
 }
 ```
 
 **Good:**
-```javascript
-function createMenu({ title, body, buttonText, cancellable }) {
+```php
+function createMenu($attributes) {
   // ...
 }
 
-createMenu({
-  title: 'Foo',
-  body: 'Bar',
-  buttonText: 'Baz',
-  cancellable: true
-});
+$this->createMenu([
+  'title'       => 'Foo',
+  'body'        => 'Bar',
+  'buttonText'  => 'Baz',
+  'cancellable' => true
+]);
 ```
 **[⬆ back to top](#table-of-contents)**
 
 
 ### Functions should do one thing
-This is by far the most important rule in software engineering. When functions
-do more than one thing, they are harder to compose, test, and reason about.
+**This is by far the most important rule in software engineering.** 
+
+When functions do more than one thing, they are harder to compose, test, and reason about.
 When you can isolate a function to just one action, they can be refactored
 easily and your code will read much cleaner. If you take nothing else away from
 this guide other than this, you'll be ahead of many developers.
 
+ // TODO
+
 **Bad:**
-```javascript
-function emailClients(clients) {
-  clients.forEach((client) => {
-    const clientRecord = database.lookup(client);
-    if (clientRecord.isActive()) {
-      email(client);
+```php
+function emailClients($clients) {
+  foreach ($clients as $client) {
+    $clientRecord = $this->getClientRecord($client->id);
+    if ($clientRecord->isActive()) {
+      $this->email($client);
     }
-  });
+  }
 }
 ```
 
 **Good:**
-```javascript
-function emailClients(clients) {
-  clients
-    .filter(isClientActive)
-    .forEach(email);
-}
-
-function isClientActive(client) {
-  const clientRecord = database.lookup(client);
-  return clientRecord.isActive();
+```php
+function emailClients($clients) {
+  $clients
+    ->filterIsActive()
+    ->email();
 }
 ```
 **[⬆ back to top](#table-of-contents)**
@@ -294,25 +273,30 @@ function isClientActive(client) {
 ### Function names should say what they do
 
 **Bad:**
-```javascript
-function addToDate(date, month) {
+```php
+class Clients {
+  function getData() {
+    // ...
+  }
+
   // ...
 }
 
-const date = new Date();
-
-// It's hard to to tell from the function name what is added
-addToDate(date, 1);
+// It is hard to know what data is and how to use it
+$clientName = $clients->getData();
 ```
 
 **Good:**
-```javascript
-function addMonthToDate(month, date) {
+```php
+class Clients {
+  function getFirstName() {
+    // ...
+  }
+
   // ...
 }
 
-const date = new Date();
-addMonthToDate(1, date);
+$clientName = $clients->getFirstName();
 ```
 **[⬆ back to top](#table-of-contents)**
 

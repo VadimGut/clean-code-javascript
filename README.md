@@ -1736,128 +1736,41 @@ describe('MakeMomentJSGreatAgain', () => {
 ```
 **[⬆ back to top](#table-of-contents)**
 
-## **Concurrency**
-### Use Promises, not callbacks
-Callbacks aren't clean, and they cause excessive amounts of nesting. With ES2015/ES6,
-Promises are a built-in global type. Use them!
-
-**Bad:**
-```javascript
-import { get } from 'request';
-import { writeFile } from 'fs';
-
-get('https://en.wikipedia.org/wiki/Robert_Cecil_Martin', (requestErr, response) => {
-  if (requestErr) {
-    console.error(requestErr);
-  } else {
-    writeFile('article.html', response.body, (writeErr) => {
-      if (writeErr) {
-        console.error(writeErr);
-      } else {
-        console.log('File written');
-      }
-    });
-  }
-});
-
-```
-
-**Good:**
-```javascript
-import { get } from 'request';
-import { writeFile } from 'fs';
-
-get('https://en.wikipedia.org/wiki/Robert_Cecil_Martin')
-  .then((response) => {
-    return writeFile('article.html', response);
-  })
-  .then(() => {
-    console.log('File written');
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
-```
-**[⬆ back to top](#table-of-contents)**
-
-### Async/Await are even cleaner than Promises
-Promises are a very clean alternative to callbacks, but ES2017/ES8 brings async and await
-which offer an even cleaner solution. All you need is a function that is prefixed
-in an `async` keyword, and then you can write your logic imperatively without
-a `then` chain of functions. Use this if you can take advantage of ES2017/ES8 features
-today!
-
-**Bad:**
-```javascript
-import { get } from 'request-promise';
-import { writeFile } from 'fs-promise';
-
-get('https://en.wikipedia.org/wiki/Robert_Cecil_Martin')
-  .then((response) => {
-    return writeFile('article.html', response);
-  })
-  .then(() => {
-    console.log('File written');
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
-```
-
-**Good:**
-```javascript
-import { get } from 'request-promise';
-import { writeFile } from 'fs-promise';
-
-async function getCleanCodeArticle() {
-  try {
-    const response = await get('https://en.wikipedia.org/wiki/Robert_Cecil_Martin');
-    await writeFile('article.html', response);
-    console.log('File written');
-  } catch(err) {
-    console.error(err);
-  }
-}
-```
-**[⬆ back to top](#table-of-contents)**
-
 
 ## **Error Handling**
 Thrown errors are a good thing! They mean the runtime has successfully
 identified when something in your program has gone wrong and it's letting
 you know by stopping function execution on the current stack, killing the
-process (in Node), and notifying you in the console with a stack trace.
+script, and notifying you with a stack trace.
 
 ### Don't ignore caught errors
 Doing nothing with a caught error doesn't give you the ability to ever fix
-or react to said error. Logging the error to the console (`console.log`)
-isn't much better as often times it can get lost in a sea of things printed
-to the console. If you wrap any bit of code in a `try/catch` it means you
+or react to said error. Logging the error a log file isn't much better as
+often times it can get lost in a sea of things printed to the file.
+If you wrap any bit of code in a `try/catch` it means you
 think an error may occur there and therefore you should have a plan,
 or create a code path, for when it occurs.
 
 **Bad:**
-```javascript
+```php
 try {
-  functionThatMightThrow();
-} catch (error) {
-  console.log(error);
+    functionThatMightThrow();
+} catch (Exception $error) {
+    log()->message($error);
 }
 ```
 
 **Good:**
-```javascript
+```php
 try {
   functionThatMightThrow();
-} catch (error) {
-  // One option (more noisy than console.log):
-  console.error(error);
-  // Another option:
-  notifyUserOfError(error);
-  // Another option:
-  reportErrorToService(error);
+} catch (Exception $error) {
+  // One option (more noisy than just log):
+  log()->error($error);
+  // Show him an alert or just "Oops..."
+  notifyUserOfError($error);
+  // So you'll be able to track your logs more efficiently.
+  reportErrorToService($error);
   // OR do all three!
 }
 ```
@@ -1867,31 +1780,26 @@ For the same reason you shouldn't ignore caught errors
 from `try/catch`.
 
 **Bad:**
-```javascript
-getdata()
-  .then((data) => {
-    functionThatMightThrow(data);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+```php
+getdata()->then(function ($data) {
+        functionThatMightThrow($data);
+    })->catch(function ($error) {
+        log()->message($error);
+    });
 ```
 
 **Good:**
-```javascript
-getdata()
-  .then((data) => {
-    functionThatMightThrow(data);
-  })
-  .catch((error) => {
-    // One option (more noisy than console.log):
-    console.error(error);
-    // Another option:
-    notifyUserOfError(error);
-    // Another option:
-    reportErrorToService(error);
-    // OR do all three!
-  });
+```php
+getData()->then(function ($data) {
+        functionThatMightThrow(data);
+    })->catch(function ($error) {
+        // One option (more noisy than just log):
+        log()->error($error);
+        // Show him an alert or just "Oops..."
+        notifyUserOfError($error);
+        // So you'll be able to track your logs more efficiently.
+        reportErrorToService($error);
+    });
 ```
 
 **[⬆ back to top](#table-of-contents)**
@@ -1900,7 +1808,7 @@ getdata()
 ## **Formatting**
 Formatting is subjective. Like many rules herein, there is no hard and fast
 rule that you must follow. The main point is DO NOT ARGUE over formatting.
-There are [tons of tools](http://standardjs.com/rules.html) to automate this.
+There are [tons of tools](http://www.php-fig.org/psr/) to automate this.
 Use one! It's a waste of time and money for engineers to argue over formatting.
 
 For things that don't fall under the purview of automatic formatting

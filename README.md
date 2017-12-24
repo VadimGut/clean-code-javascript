@@ -1,5 +1,5 @@
 # Notice
-This project was never finished because this [*repo*] (https://github.com/jupeter/clean-code-php) was released during the writing of this.
+This project was never finished because this [*repo*](https://github.com/jupeter/clean-code-php) was released during the writing of this.
 
 
 # clean-code-php

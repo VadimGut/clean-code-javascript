@@ -1,3 +1,6 @@
+# Notice
+This project was never finished because this [*repo*] (https://github.com/jupeter/clean-code-php) was released during the writing of this.
+
 
 # clean-code-php
 Note: much of this library was translated from the [*clean-code-javascript*](https://raw.githubusercontent.com/ryanmcdermott/clean-code-javascript/)
